@@ -148,6 +148,20 @@ document.addEventListener('DOMContentLoaded', () => {
     const uploadVideoBtn = document.getElementById('upload-video-btn');
     const videoError = document.getElementById('video-error');
 
+    // Logic to handle initial video load status
+    if (introVideo) {
+        introVideo.addEventListener('loadeddata', () => {
+            introVideo.classList.remove('hidden');
+            videoPlaceholder.classList.add('hidden');
+        });
+
+        introVideo.addEventListener('error', () => {
+            introVideo.classList.add('hidden');
+            videoPlaceholder.classList.remove('hidden');
+            console.log("Video not found or failed to load. Showing placeholder.");
+        });
+    }
+
     uploadVideoBtn.addEventListener('click', () => {
         heroVideoInput.click();
     });
@@ -299,4 +313,3 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 });
-
