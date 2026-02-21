@@ -1,229 +1,366 @@
-<!DOCTYPE html>
-<html lang="en">
+document.addEventListener('DOMContentLoaded', () => {
+    // 1. Navigation Active State on Scroll (Existing)
+    const sections = document.querySelectorAll('section');
+    const navLinks = document.querySelectorAll('.nav-link');
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Portfolio | Creative Developer</title>
-    <link rel="stylesheet" href="style.css">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&display=swap" rel="stylesheet">
-</head>
+    const observerOptions = {
+        root: null,
+        rootMargin: '0px',
+        threshold: 0.3
+    };
 
-<body>
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                navLinks.forEach(link => link.classList.remove('active'));
+                const id = entry.target.getAttribute('id');
+                const activeLink = document.querySelector(`.nav-link[href="#${id}"]`);
+                if (activeLink) {
+                    activeLink.classList.add('active');
+                }
+            }
+        });
+    }, observerOptions);
 
-    <!-- Main Content Wrapper -->
-    <main class="content-wrapper">
+    sections.forEach(section => {
+        observer.observe(section);
+    });
 
-        <!-- Section: Introduction (Hero) -->
-        <section id="introduction" class="section hero-section">
-            <div class="hero-top-row">
-                <div class="hero-photo-container">
-                    <img src="https://via.placeholder.com/300" alt="Profile Photo" class="profile-photo">
-                </div>
-                <div class="hero-video-container">
-                    <video id="intro-video" controls>
-                        <source src="vid.mp4" type="video/mp4">
-                        Your browser does not support the video tag.
-                    </video>
-                    <div id="video-placeholder" class="video-placeholder hidden">
-                        <span>Intro Video</span>
+    // --- Dynamic Learning Management ---
+    const learningList = document.getElementById('learning-list');
+    const openAddLearningBtn = document.getElementById('open-add-learning-btn');
+    const addLearningModal = document.getElementById('add-learning-modal');
+    const closeLearningModal = document.querySelector('.close-learning-modal');
+    const saveLearningBtn = document.getElementById('save-learning');
+    const learningModalTitle = document.getElementById('learning-modal-title');
+    const editLearningIndex = document.getElementById('edit-learning-index');
+
+    let isAdmin = false; // Tracks if admin is logged in
+
+    let learnings = JSON.parse(localStorage.getItem('learnings')) || [
+        { date: 'Jan 12, 2026', title: 'Professional Self-Introduction', desc: 'Learned how to introduce oneself professionally in various settings.' },
+        { date: 'Jan 19, 2026', title: "How to answer someone's question", desc: 'Studied techniques for providing clear and concise answers.' },
+        { date: 'Feb 02, 2026', title: 'How to present ourself in front of others', desc: 'Confidence building and body language tips for presentations.' },
+        { date: 'Feb 09, 2026', title: 'What is Carbon footprint and what are its harmful effects', desc: 'Explored environmental impact and ways to reduce carbon footprint.' },
+        { date: 'Feb 16, 2026', title: 'Advanced Web Development Concepts', desc: 'Deep dive into modern web architecture and performance optimization.' }
+    ];
+
+    function renderLearnings() {
+        if (!learningList) return;
+        learningList.innerHTML = '';
+        learnings.forEach((item, index) => {
+            const card = document.createElement('div');
+            card.classList.add('learning-card');
+
+            let adminButtons = '';
+            if (isAdmin) {
+                adminButtons = `
+                    <div class="card-admin-actions">
+                        <button class="btn-icon-small edit-learning" data-index="${index}">Edit</button>
+                        <button class="btn-icon-small delete-learning" data-index="${index}">Delete</button>
                     </div>
-                    <input type="file" id="hero-video-input" class="hidden" accept="video/*">
-                    <button id="upload-video-btn" class="btn-primary hidden">Upload Video</button>
-                    <p id="video-error" class="error-msg hidden"></p>
-                </div>
-            </div>
-            <div class="hero-bottom-row">
-                <h1 class="hero-title">Hello, I'm Abhinav Tariyal</h1>
-                <p class="hero-subtitle">Creative Developer & Learner</p>
-                <p class="hero-description">
-                    Hello, I'm Abhinav Tariyal. I am from Srinagar, Pauri Garhwal, with a strong interest in
-                    technology, writing, and continuous learning. I have earned medals in writing and debate
-                    competitions, showcasing my communication and analytical skills.
-                </p>
-                <p class="hero-description">
-                    I have worked on projects such as a Password Vault and a University Mini Question Bank, which
-                    strengthened my abilities in coding and problem-solving. I have also completed courses in Python,
-                    C++, Machine Learning using Python, and Sanskrit Vyakarana.
-                </p>
-                <p class="hero-description">
-                    Beyond academics, I enjoy writing, playing chess, and reading philosophy-based books, as they
-                    enhance my creativity, strategic thinking, and depth of understanding.
-                </p>
-                <p class="hero-description">
-                    I am always eager to learn, build, and contribute meaningfully.
-                </p>
-            </div>
-        </section>
+                `;
+            }
 
-        <!-- Section: Assignments -->
-        <section id="assignments" class="section">
-            <div class="section-header">
-                <h2 class="section-title">Assignments</h2>
-                <button id="open-add-modal-btn" class="btn-primary hidden">Computed Add +</button>
-            </div>
-            <div class="assignments-stack" id="assignments-list">
-                <div class="assignment-card">
-                    <h3>Assignment 1: Self-Introduction</h3>
-                    <p>Creating complex grid layouts using CSS Grid and Flexbox.</p>
-                </div>
-                <!-- <div class="assignment-card">
-                    <h3>Assignment 2: Responsive Design</h3>
-                    <p>Adapting interfaces for mobile, tablet, and desktop screens.</p>
-                </div> -->
-                <!-- Add more assignments as needed -->
-            </div>
-        </section>
+            card.innerHTML = `
+                ${adminButtons}
+                <span class="date">${item.date}</span>
+                <h3>${item.title}</h3>
+                <p>${item.desc}</p>
+            `;
+            learningList.appendChild(card);
+        });
 
-        <!-- Section: Today's Learning -->
-        <section id="learning" class="section">
-            <div class="section-header">
-                <h2 class="section-title">Today's Learning</h2>
-                <button id="open-add-learning-btn" class="btn-primary hidden">Add Learning +</button>
-            </div>
-            <div class="learning-grid" id="learning-list">
-                <!-- Learning cards will be dynamically managed -->
-            </div>
-        </section>
+        // Add Event Listeners to dynamic buttons
+        document.querySelectorAll('.edit-learning').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                const index = e.target.getAttribute('data-index');
+                openEditLearning(index);
+            });
+        });
 
-        <!-- Section: Project -->
-        <section id="projects" class="section">
-            <h2 class="section-title">Projects</h2>
-            <div class="projects-grid">
-                <article class="project-card">
-                    <div class="project-image"></div>
-                    <div class="project-info">
-                        <h3>1> Student Management System</h3>
-                        <p>A full-featured analytics dashboard for online stores.</p>
-                        <a href="#" class="btn-link">View Project</a>
+        document.querySelectorAll('.delete-learning').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                const index = e.target.getAttribute('data-index');
+                if (confirm('Are you sure you want to delete this learning entry?')) {
+                    learnings.splice(index, 1);
+                    saveAndRender();
+                }
+            });
+        });
+    }
+
+    function saveAndRender() {
+        localStorage.setItem('learnings', JSON.stringify(learnings));
+        renderLearnings();
+    }
+
+    function openEditLearning(index) {
+        const item = learnings[index];
+        learningModalTitle.textContent = 'Edit Learning';
+        editLearningIndex.value = index;
+        document.getElementById('new-learning-date').value = item.date;
+        document.getElementById('new-learning-title').value = item.title;
+        document.getElementById('new-learning-desc').value = item.desc;
+        addLearningModal.classList.remove('hidden');
+    }
+
+    renderLearnings();
+
+    // Modal Handlers for Learnings
+    openAddLearningBtn.addEventListener('click', () => {
+        learningModalTitle.textContent = 'Add New Learning';
+        editLearningIndex.value = '';
+        document.getElementById('new-learning-date').value = '';
+        document.getElementById('new-learning-title').value = '';
+        document.getElementById('new-learning-desc').value = '';
+        addLearningModal.classList.remove('hidden');
+    });
+
+    closeLearningModal.addEventListener('click', () => {
+        addLearningModal.classList.add('hidden');
+    });
+
+    saveLearningBtn.addEventListener('click', () => {
+        const date = document.getElementById('new-learning-date').value;
+        const title = document.getElementById('new-learning-title').value;
+        const desc = document.getElementById('new-learning-desc').value;
+        const index = editLearningIndex.value;
+
+        if (date && title && desc) {
+            const learningData = { date, title, desc };
+            if (index !== '') {
+                learnings[index] = learningData;
+            } else {
+                learnings.unshift(learningData); // Add to top
+            }
+            saveAndRender();
+            addLearningModal.classList.add('hidden');
+        } else {
+            alert('Please fill in all fields.');
+        }
+    });
+
+    // --- Hero Video Management ---
+    const introVideo = document.getElementById('intro-video');
+    const videoPlaceholder = document.getElementById('video-placeholder');
+    const heroVideoInput = document.getElementById('hero-video-input');
+    const uploadVideoBtn = document.getElementById('upload-video-btn');
+    const videoError = document.getElementById('video-error');
+
+    // Logic to handle initial video load status
+    if (introVideo) {
+        introVideo.addEventListener('loadeddata', () => {
+            introVideo.classList.remove('hidden');
+            videoPlaceholder.classList.add('hidden');
+        });
+
+        introVideo.addEventListener('error', () => {
+            introVideo.classList.add('hidden');
+            videoPlaceholder.classList.remove('hidden');
+            console.log("Video not found or failed to load. Showing placeholder.");
+        });
+    }
+
+    uploadVideoBtn.addEventListener('click', () => {
+        heroVideoInput.click();
+    });
+
+    heroVideoInput.addEventListener('change', (e) => {
+        const file = e.target.files[0];
+        if (file) {
+            if (file.size > 50 * 1024 * 1024) { // 50MB limit for demo
+                videoError.textContent = "File too large. Please choose a video under 50MB.";
+                videoError.classList.remove('hidden');
+                return;
+            }
+            videoError.classList.add('hidden');
+            const fileUrl = URL.createObjectURL(file);
+            introVideo.src = fileUrl;
+            introVideo.classList.remove('hidden');
+            videoPlaceholder.classList.add('hidden');
+            introVideo.load();
+        }
+    });
+
+
+    // 2. Admin Login Logic (New)
+    const adminLoginBtn = document.getElementById('admin-login-btn');
+    const loginModal = document.getElementById('login-modal');
+    const closeModal = document.querySelector('.close-modal');
+    const loginSubmit = document.getElementById('login-submit');
+    const passwordInput = document.getElementById('admin-password');
+    const loginError = document.getElementById('login-error');
+    const addModalBtn = document.getElementById('open-add-modal-btn');
+
+    // Show Login Modal
+    adminLoginBtn.addEventListener('click', () => {
+        loginModal.classList.remove('hidden');
+    });
+
+    // Hide Modal on Close
+    closeModal.addEventListener('click', () => {
+        loginModal.classList.add('hidden');
+        loginError.textContent = '';
+        passwordInput.value = '';
+    });
+
+    // Login Submission
+    loginSubmit.addEventListener('click', () => {
+        const password = passwordInput.value;
+        if (password === 'admin123') { // Simple client-side check
+            isAdmin = true;
+            loginModal.classList.add('hidden');
+            addModalBtn.classList.remove('hidden'); // Show the "Add Assignment" button
+            openAddLearningBtn.classList.remove('hidden'); // Show the "Add Learning" button
+            uploadVideoBtn.classList.remove('hidden'); // Show the "Upload Video" button
+            adminLoginBtn.textContent = 'Admin (Logged In)';
+            adminLoginBtn.disabled = true;
+            renderLearnings(); // Refresh to show edit/delete buttons
+            alert('Welcome back, Admin!');
+        } else {
+            loginError.textContent = 'Incorrect password. Try "admin123"';
+        }
+    });
+
+
+    // --- Add Assignment Logic (New & Persistent) ---
+    const addAssignmentModal = document.getElementById('add-assignment-modal');
+    const closeAddModal = document.querySelector('.close-add-modal');
+    const saveAssignmentBtn = document.getElementById('save-assignment');
+    const assignmentsList = document.getElementById('assignments-list');
+    const fileInput = document.getElementById('new-assign-file');
+    const fileChosenName = document.getElementById('file-chosen-name');
+
+    let assignments = JSON.parse(localStorage.getItem('assignments')) || [
+        {
+            title: 'Assignment 1: Self-Introduction',
+            desc: 'Creating complex grid layouts using CSS Grid and Flexbox.',
+            fileName: '',
+            fileUrl: ''
+        }
+    ];
+
+    function renderAssignments() {
+        if (!assignmentsList) return;
+        assignmentsList.innerHTML = '';
+        assignments.forEach((item, index) => {
+            const card = document.createElement('div');
+            card.classList.add('assignment-card');
+
+            let adminButtons = '';
+            if (isAdmin) {
+                adminButtons = `
+                    <div class="card-admin-actions">
+                        <button class="btn-icon-small delete-assignment" data-index="${index}">Delete</button>
                     </div>
-                </article>
-                <article class="project-card">
-                    <div class="project-image"></div>
-                    <div class="project-info">
-                        <h3>Responsive website for Food Waste Management </h3>
-                        <p>Productivity tool with drag-and-drop functionality.</p>
-                        <a href="#" class="btn-link">View Project</a>
-                    </div>
-                </article>
-            </div>
-        </section>
+                `;
+            }
 
-        <!-- Section: Experience -->
-        <section id="experience" class="section">
-            <h2 class="section-title">Experience</h2>
-            <div class="timeline">
+            let attachmentHtml = '';
+            // If we have a fileUrl (blob or path), show the link
+            if (item.fileUrl || item.fileName) {
+                const link = item.fileUrl || `documents/${item.fileName}`;
+                const displayName = item.fileName || 'View Attachment';
+                attachmentHtml = `
+                    <a href="${link}" target="_blank" class="attachment-link">
+                        ${displayName}
+                    </a>
+                `;
+            }
 
-                <div class="timeline-item">
-                    <span class="year">2025 - Present</span>
-                    <h3>Frontend Developer Intern</h3>
-                    <p>Tech Corp Inc.</p>
-                    <p>Building responsive UI components and optimizing web performance.</p>
-                </div>
+            card.innerHTML = `
+                ${adminButtons}
+                <h3>${item.title}</h3>
+                <p>${item.desc}</p>
+                ${attachmentHtml}
+            `;
+            assignmentsList.appendChild(card);
+        });
 
-                <div class="timeline-item">
-                    <span class="year">2024 - 2025</span>
-                    <h3>Freelance Web Designer</h3>
-                    <p>Self-Employed</p>
-                    <p>Delivered custom websites for small businesses and creatives.</p>
-                </div>
-            </div>
-        </section>
+        // Add Delete Handlers
+        document.querySelectorAll('.delete-assignment').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                const index = e.target.getAttribute('data-index');
+                if (confirm('Are you sure you want to delete this assignment?')) {
+                    assignments.splice(index, 1);
+                    saveAndRenderAssignments();
+                }
+            });
+        });
+    }
 
-        <!-- Section: Education -->
-        <section id="education" class="section">
-            <h2 class="section-title">Education</h2>
-            <div class="list-item">
-                <h3>12th and 10th from St.Thomas School,Pauri Garhwal.
-                    Bachelor of Science in Computer Science from Graphic Era Hill University,
-                    Dehradun.</h3>
-                <p>University of Tech, 2022 - 2026</p>
-            </div>
-        </section>
+    function saveAndRenderAssignments() {
+        localStorage.setItem('assignments', JSON.stringify(assignments));
+        renderAssignments();
+    }
 
-        <!-- Section: Certifications -->
-        <section id="certifications" class="section">
-            <h2 class="section-title">Certifications</h2>
-            <ul class="cert-list">
-                <li>Certified Web Developer - W3C</li>
-                <li>JavaScript Algorithms & Data Structures - freeCodeCamp</li>
-            </ul>
-        </section>
+    // Initial render
+    renderAssignments();
 
-        <!-- Section: Resume -->
-        <section id="resume" class="section">
-            <h2 class="section-title">Resume</h2>
-            <div class="resume-container">
-                <p>Check out my full professional history.</p>
-                <a href="#" class="btn-primary" download>Download Resume PDF</a>
-            </div>
-        </section>
+    // Show Add Modal
+    addModalBtn.addEventListener('click', () => {
+        addAssignmentModal.classList.remove('hidden');
+    });
 
-    </main>
+    // Update File Chosen Name in Modal
+    fileInput.addEventListener('change', () => {
+        if (fileInput.files.length > 0) {
+            fileChosenName.textContent = fileInput.files[0].name;
+            const fileNameInput = document.getElementById('new-assign-filename');
+            if (!fileNameInput.value) {
+                fileNameInput.value = fileInput.files[0].name;
+            }
+        } else {
+            fileChosenName.textContent = 'No file chosen';
+        }
+    });
 
-    <!-- Navigation Bar (Right Sidebar) -->
-    <nav class="right-sidebar-nav">
-        <ul class="nav-list">
-            <li><a href="#introduction" class="nav-link active">Introduction</a></li>
-            <li><a href="#assignments" class="nav-link">Assignments</a></li>
-            <li><a href="#learning" class="nav-link">Learning</a></li>
-            <li><a href="#projects" class="nav-link">Projects</a></li>
-            <li><a href="#experience" class="nav-link">Experience</a></li>
-            <li><a href="#education" class="nav-link">Education</a></li>
-            <li><a href="#certifications" class="nav-link">Certifications</a></li>
-            <li><a href="#resume" class="nav-link">Resume</a></li>
-        </ul>
-        <!-- Admin Link -->
-        <div class="admin-link-container">
-            <button id="admin-login-btn" class="text-link-small">Admin Access</button>
-        </div>
-    </nav>
+    // Hide Add Modal
+    closeAddModal.addEventListener('click', () => {
+        addAssignmentModal.classList.add('hidden');
+    });
 
-    <!-- Admin Login Model -->
-    <div id="login-modal" class="modal hidden">
-        <div class="modal-content">
-            <span class="close-modal">&times;</span>
-            <h2>Admin Login</h2>
-            <input type="password" id="admin-password" placeholder="Enter Password">
-            <button id="login-submit" class="btn-primary">Login</button>
-            <p id="login-error" class="error-msg"></p>
-        </div>
-    </div>
+    // Save New Assignment
+    saveAssignmentBtn.addEventListener('click', () => {
+        const title = document.getElementById('new-assign-title').value;
+        const desc = document.getElementById('new-assign-desc').value;
+        const file = fileInput.files[0];
+        const customFileName = document.getElementById('new-assign-filename').value;
 
-    <!-- Add Learning Modal -->
-    <div id="add-learning-modal" class="modal hidden">
-        <div class="modal-content">
-            <span class="close-learning-modal">&times;</span>
-            <h2 id="learning-modal-title">Add New Learning</h2>
-            <input type="hidden" id="edit-learning-index">
-            <input type="text" id="new-learning-date" placeholder="Date (e.g., Feb 21, 2026)">
-            <input type="text" id="new-learning-title" placeholder="Learning Topic">
-            <textarea id="new-learning-desc" placeholder="Details/Takeaways" rows="4"></textarea>
-            <button id="save-learning" class="btn-primary">Save Learning</button>
-        </div>
-    </div>
+        if (title && desc) {
+            const newAssignment = {
+                title: title,
+                desc: desc,
+                fileName: customFileName || (file ? file.name : ''),
+                fileUrl: file ? URL.createObjectURL(file) : ''
+            };
 
-    <!-- Add Assignment Modal -->
-    <div id="add-assignment-modal" class="modal hidden">
-        <div class="modal-content">
-            <span class="close-add-modal">&times;</span>
-            <h2>Add New Assignment</h2>
-            <input type="text" id="new-assign-title" placeholder="Assignment Title">
-            <textarea id="new-assign-desc" placeholder="Description" rows="4"></textarea>
-            <div class="file-upload-container">
-                <input type="file" id="new-assign-file" class="hidden-file-input">
-                <label for="new-assign-file" class="btn-secondary">Choose File</label>
-                <span id="file-chosen-name">No file chosen</span>
-            </div>
-            <input type="text" id="new-assign-filename" placeholder="File Display Name (e.g., Assignment PDF)">
-            <button id="save-assignment" class="btn-primary">Add Assignment</button>
-        </div>
-    </div>
+            assignments.unshift(newAssignment);
+            saveAndRenderAssignments();
 
-    <script src="script.js"></script>
-</body>
+            // Clean up
+            addAssignmentModal.classList.add('hidden');
+            document.getElementById('new-assign-title').value = '';
+            document.getElementById('new-assign-desc').value = '';
+            fileInput.value = '';
+            fileChosenName.textContent = 'No file chosen';
+            document.getElementById('new-assign-filename').value = '';
+        } else {
+            alert('Please fill in both title and description.');
+        }
+    });
 
-</html>
-
+    // Close Modals on Outside Click
+    window.addEventListener('click', (e) => {
+        if (e.target === loginModal) {
+            loginModal.classList.add('hidden');
+        }
+        if (e.target === addAssignmentModal) {
+            addAssignmentModal.classList.add('hidden');
+        }
+        if (e.target === addLearningModal) {
+            addLearningModal.classList.add('hidden');
+        }
+    });
+});
