@@ -6,121 +6,223 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Portfolio | Creative Developer</title>
     <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&display=swap" rel="stylesheet">
 </head>
 
 <body>
 
-<main class="content-wrapper">
+    <!-- Main Content Wrapper -->
+    <main class="content-wrapper">
 
-<!-- HERO SECTION -->
-<section id="introduction" class="section hero-section">
-    <div class="hero-top-row">
-
-        <!-- PROFILE IMAGE -->
-        <div class="hero-photo-container">
-            <img src="https://via.placeholder.com/300"
-                 alt="Profile Photo"
-                 class="profile-photo">
-        </div>
-
-        <!-- ✅ WORKING VIDEO -->
-        <div class="hero-video-container">
-            <video controls width="100%">
-                <source src="vid.mp4" type="video/mp4">
-                Your browser does not support the video tag.
-            </video>
-        </div>
-
-    </div>
-
-    <div class="hero-bottom-row">
-        <h1 class="hero-title">Hello, I'm Abhinav Tariyal</h1>
-        <p class="hero-subtitle">Creative Developer & Learner</p>
-
-        <p class="hero-description">
-            Hello, I'm Abhinav Tariyal. I am from Srinagar, Pauri Garhwal,
-            with a strong interest in technology, writing, and continuous learning.
-        </p>
-
-        <p class="hero-description">
-            I have worked on projects such as a Password Vault and a
-            University Mini Question Bank, strengthening my coding
-            and problem-solving skills.
-        </p>
-
-        <p class="hero-description">
-            I have completed courses in Python, C++, Machine Learning
-            using Python, and Sanskrit Vyakarana.
-        </p>
-
-        <p class="hero-description">
-            I am always eager to learn, build, and contribute meaningfully.
-        </p>
-    </div>
-</section>
-
-<!-- Assignments -->
-<section id="assignments" class="section">
-    <div class="section-header">
-        <h2 class="section-title">Assignments</h2>
-    </div>
-    <div class="assignments-stack">
-        <div class="assignment-card">
-            <h3>Assignment 1: Self-Introduction</h3>
-            <p>Creating complex grid layouts using CSS Grid and Flexbox.</p>
-        </div>
-    </div>
-</section>
-
-<!-- Learning -->
-<section id="learning" class="section">
-    <h2 class="section-title">Today's Learning</h2>
-    <div class="learning-grid"></div>
-</section>
-
-<!-- Projects -->
-<section id="projects" class="section">
-    <h2 class="section-title">Projects</h2>
-    <div class="projects-grid">
-        <article class="project-card">
-            <div class="project-info">
-                <h3>Student Management System</h3>
-                <p>A full-featured analytics dashboard for online stores.</p>
+        <!-- Section: Introduction (Hero) -->
+        <section id="introduction" class="section hero-section">
+            <div class="hero-top-row">
+                <div class="hero-photo-container">
+                    <img src="https://via.placeholder.com/300" alt="Profile Photo" class="profile-photo">
+                </div>
+                <div class="hero-video-container">
+                    <video id="intro-video" controls>
+                        <source src="videos/intro.mp4" type="video/mp4">
+                        Your browser does not support the video tag.
+                    </video>
+                    <div id="video-placeholder" class="video-placeholder hidden">
+                        <span>Intro Video</span>
+                    </div>
+                    <input type="file" id="hero-video-input" class="hidden" accept="video/*">
+                    <button id="upload-video-btn" class="btn-primary hidden">Upload Video</button>
+                    <p id="video-error" class="error-msg hidden"></p>
+                </div>
             </div>
-        </article>
-
-        <article class="project-card">
-            <div class="project-info">
-                <h3>Responsive Website for Food Waste Management</h3>
-                <p>Productivity tool with drag-and-drop functionality.</p>
+            <div class="hero-bottom-row">
+                <h1 class="hero-title">Hello, I'm Abhinav Tariyal</h1>
+                <p class="hero-subtitle">Creative Developer & Learner</p>
+                <p class="hero-description">
+                    Hello, I'm Abhinav Tariyal. I am from Srinagar, Pauri Garhwal, with a strong interest in
+                    technology, writing, and continuous learning. I have earned medals in writing and debate
+                    competitions, showcasing my communication and analytical skills.
+                </p>
+                <p class="hero-description">
+                    I have worked on projects such as a Password Vault and a University Mini Question Bank, which
+                    strengthened my abilities in coding and problem-solving. I have also completed courses in Python,
+                    C++, Machine Learning using Python, and Sanskrit Vyakarana.
+                </p>
+                <p class="hero-description">
+                    Beyond academics, I enjoy writing, playing chess, and reading philosophy-based books, as they
+                    enhance my creativity, strategic thinking, and depth of understanding.
+                </p>
+                <p class="hero-description">
+                    I am always eager to learn, build, and contribute meaningfully.
+                </p>
             </div>
-        </article>
-    </div>
-</section>
+        </section>
 
-<!-- Experience -->
-<section id="experience" class="section">
-    <h2 class="section-title">Experience</h2>
-    <div class="timeline">
-        <div class="timeline-item">
-            <span class="year">2025 - Present</span>
-            <h3>Frontend Developer Intern</h3>
-            <p>Tech Corp Inc.</p>
+        <!-- Section: Assignments -->
+        <section id="assignments" class="section">
+            <div class="section-header">
+                <h2 class="section-title">Assignments</h2>
+                <button id="open-add-modal-btn" class="btn-primary hidden">Computed Add +</button>
+            </div>
+            <div class="assignments-stack" id="assignments-list">
+                <div class="assignment-card">
+                    <h3>Assignment 1: Self-Introduction</h3>
+                    <p>Creating complex grid layouts using CSS Grid and Flexbox.</p>
+                </div>
+                <!-- <div class="assignment-card">
+                    <h3>Assignment 2: Responsive Design</h3>
+                    <p>Adapting interfaces for mobile, tablet, and desktop screens.</p>
+                </div> -->
+                <!-- Add more assignments as needed -->
+            </div>
+        </section>
+
+        <!-- Section: Today's Learning -->
+        <section id="learning" class="section">
+            <div class="section-header">
+                <h2 class="section-title">Today's Learning</h2>
+                <button id="open-add-learning-btn" class="btn-primary hidden">Add Learning +</button>
+            </div>
+            <div class="learning-grid" id="learning-list">
+                <!-- Learning cards will be dynamically managed -->
+            </div>
+        </section>
+
+        <!-- Section: Project -->
+        <section id="projects" class="section">
+            <h2 class="section-title">Projects</h2>
+            <div class="projects-grid">
+                <article class="project-card">
+                    <div class="project-image"></div>
+                    <div class="project-info">
+                        <h3>1> Student Management System</h3>
+                        <p>A full-featured analytics dashboard for online stores.</p>
+                        <a href="#" class="btn-link">View Project</a>
+                    </div>
+                </article>
+                <article class="project-card">
+                    <div class="project-image"></div>
+                    <div class="project-info">
+                        <h3>Responsive website for Food Waste Management </h3>
+                        <p>Productivity tool with drag-and-drop functionality.</p>
+                        <a href="#" class="btn-link">View Project</a>
+                    </div>
+                </article>
+            </div>
+        </section>
+
+        <!-- Section: Experience -->
+        <section id="experience" class="section">
+            <h2 class="section-title">Experience</h2>
+            <div class="timeline">
+
+                <div class="timeline-item">
+                    <span class="year">2025 - Present</span>
+                    <h3>Frontend Developer Intern</h3>
+                    <p>Tech Corp Inc.</p>
+                    <p>Building responsive UI components and optimizing web performance.</p>
+                </div>
+
+                <div class="timeline-item">
+                    <span class="year">2024 - 2025</span>
+                    <h3>Freelance Web Designer</h3>
+                    <p>Self-Employed</p>
+                    <p>Delivered custom websites for small businesses and creatives.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section: Education -->
+        <section id="education" class="section">
+            <h2 class="section-title">Education</h2>
+            <div class="list-item">
+                <h3>12th and 10th from St.Thomas School,Pauri Garhwal.
+                    Bachelor of Science in Computer Science from Graphic Era Hill University,
+                    Dehradun.</h3>
+                <p>University of Tech, 2022 - 2026</p>
+            </div>
+        </section>
+
+        <!-- Section: Certifications -->
+        <section id="certifications" class="section">
+            <h2 class="section-title">Certifications</h2>
+            <ul class="cert-list">
+                <li>Certified Web Developer - W3C</li>
+                <li>JavaScript Algorithms & Data Structures - freeCodeCamp</li>
+            </ul>
+        </section>
+
+        <!-- Section: Resume -->
+        <section id="resume" class="section">
+            <h2 class="section-title">Resume</h2>
+            <div class="resume-container">
+                <p>Check out my full professional history.</p>
+                <a href="#" class="btn-primary" download>Download Resume PDF</a>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Navigation Bar (Right Sidebar) -->
+    <nav class="right-sidebar-nav">
+        <ul class="nav-list">
+            <li><a href="#introduction" class="nav-link active">Introduction</a></li>
+            <li><a href="#assignments" class="nav-link">Assignments</a></li>
+            <li><a href="#learning" class="nav-link">Learning</a></li>
+            <li><a href="#projects" class="nav-link">Projects</a></li>
+            <li><a href="#experience" class="nav-link">Experience</a></li>
+            <li><a href="#education" class="nav-link">Education</a></li>
+            <li><a href="#certifications" class="nav-link">Certifications</a></li>
+            <li><a href="#resume" class="nav-link">Resume</a></li>
+        </ul>
+        <!-- Admin Link -->
+        <div class="admin-link-container">
+            <button id="admin-login-btn" class="text-link-small">Admin Access</button>
+        </div>
+    </nav>
+
+    <!-- Admin Login Model -->
+    <div id="login-modal" class="modal hidden">
+        <div class="modal-content">
+            <span class="close-modal">&times;</span>
+            <h2>Admin Login</h2>
+            <input type="password" id="admin-password" placeholder="Enter Password">
+            <button id="login-submit" class="btn-primary">Login</button>
+            <p id="login-error" class="error-msg"></p>
         </div>
     </div>
-</section>
 
-<!-- Education -->
-<section id="education" class="section">
-    <h2 class="section-title">Education</h2>
-    <div class="list-item">
-        <h3>Bachelor of Science in Computer Science</h3>
-        <p>Graphic Era Hill University, Dehradun</p>
+    <!-- Add Learning Modal -->
+    <div id="add-learning-modal" class="modal hidden">
+        <div class="modal-content">
+            <span class="close-learning-modal">&times;</span>
+            <h2 id="learning-modal-title">Add New Learning</h2>
+            <input type="hidden" id="edit-learning-index">
+            <input type="text" id="new-learning-date" placeholder="Date (e.g., Feb 21, 2026)">
+            <input type="text" id="new-learning-title" placeholder="Learning Topic">
+            <textarea id="new-learning-desc" placeholder="Details/Takeaways" rows="4"></textarea>
+            <button id="save-learning" class="btn-primary">Save Learning</button>
+        </div>
     </div>
-</section>
 
-</main>
+    <!-- Add Assignment Modal -->
+    <div id="add-assignment-modal" class="modal hidden">
+        <div class="modal-content">
+            <span class="close-add-modal">&times;</span>
+            <h2>Add New Assignment</h2>
+            <input type="text" id="new-assign-title" placeholder="Assignment Title">
+            <textarea id="new-assign-desc" placeholder="Description" rows="4"></textarea>
+            <div class="file-upload-container">
+                <input type="file" id="new-assign-file" class="hidden-file-input">
+                <label for="new-assign-file" class="btn-secondary">Choose File</label>
+                <span id="file-chosen-name">No file chosen</span>
+            </div>
+            <input type="text" id="new-assign-filename" placeholder="File Display Name (e.g., Assignment PDF)">
+            <button id="save-assignment" class="btn-primary">Add Assignment</button>
+        </div>
+    </div>
 
+    <script src="script.js"></script>
 </body>
+
 </html>
