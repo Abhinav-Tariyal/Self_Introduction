@@ -158,11 +158,14 @@ p {
 .hero-video-container {
     flex: 1;
     display: flex;
-    justify-content: flex-start;
-    /* Push video towards center */
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
 }
 
-.video-placeholder {
+.video-placeholder,
+#intro-video {
     width: 320px;
     height: 180px;
     background-color: var(--card-bg);
@@ -172,6 +175,8 @@ p {
     align-items: center;
     justify-content: center;
     color: var(--text-secondary);
+    overflow: hidden;
+    object-fit: cover;
 }
 
 .hero-bottom-row {
@@ -183,6 +188,7 @@ p {
 .hero-title {
     background: linear-gradient(90deg, var(--accent-color), #bc8cff);
     -webkit-background-clip: text;
+    background-clip: text;
     -webkit-text-fill-color: transparent;
 }
 
@@ -412,4 +418,106 @@ p {
     color: #ff6b6b;
     font-size: 0.9rem;
     margin-top: 1rem;
+}
+
+/* File Upload Styles */
+.file-upload-container {
+    margin: 1rem 0;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.hidden-file-input {
+    display: none;
+}
+
+.btn-secondary {
+    display: inline-block;
+    padding: 0.6rem 1.2rem;
+    background-color: transparent;
+    border: 1px solid var(--border-color);
+    color: var(--text-secondary);
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: 500;
+    transition: all 0.3s ease;
+}
+
+.btn-secondary:hover {
+    border-color: var(--accent-color);
+    color: var(--accent-color);
+    background: rgba(88, 166, 255, 0.05);
+}
+
+#file-chosen-name {
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+    max-width: 200px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.attachment-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-top: 1rem;
+    color: var(--accent-color);
+    font-weight: 500;
+    font-size: 0.95rem;
+    padding: 0.4rem 0.8rem;
+    background: rgba(88, 166, 255, 0.1);
+    border-radius: 4px;
+    border: 1px solid transparent;
+}
+
+.attachment-link:hover {
+    background: rgba(88, 166, 255, 0.2);
+    border-color: var(--accent-color);
+}
+
+.attachment-link::before {
+    content: '📎';
+    font-size: 1rem;
+}
+
+/* Learning Card Admin Buttons */
+.learning-card {
+    position: relative;
+}
+
+.card-admin-actions {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    display: flex;
+    gap: 0.5rem;
+}
+
+.btn-icon-small {
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid var(--border-color);
+    color: var(--text-secondary);
+    padding: 4px 8px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 0.8rem;
+    transition: all 0.2s;
+}
+
+.btn-icon-small:hover {
+    color: var(--accent-color);
+    border-color: var(--accent-color);
+    background: rgba(88, 166, 255, 0.1);
+}
+
+.date {
+    display: block;
+    font-size: 0.85rem;
+    color: var(--accent-color);
+    margin-bottom: 0.5rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
 }
