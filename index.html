@@ -23,17 +23,36 @@
                     <img src="https://via.placeholder.com/300" alt="Profile Photo" class="profile-photo">
                 </div>
                 <div class="hero-video-container">
-                    <div class="video-placeholder">
-                        <span>Intro Video (1:00)</span>
+                    <video id="intro-video" class="hidden" controls>
+                        Your browser does not support the video tag.
+                    </video>
+                    <div id="video-placeholder" class="video-placeholder">
+                        <span>Intro Video</span>
                     </div>
+                    <input type="file" id="hero-video-input" class="hidden" accept="video/*">
+                    <button id="upload-video-btn" class="btn-primary hidden">Upload Video</button>
+                    <p id="video-error" class="error-msg hidden"></p>
                 </div>
             </div>
             <div class="hero-bottom-row">
                 <h1 class="hero-title">Hello, I'm Abhinav Tariyal</h1>
                 <p class="hero-subtitle">Creative Developer & Learner</p>
                 <p class="hero-description">
-                    Welcome to my portfolio. I am passionate about building beautiful web experiences and constantly
-                    learning new technologies.
+                    Hello, I'm Abhinav Tariyal. I am from Srinagar, Pauri Garhwal, with a strong interest in
+                    technology, writing, and continuous learning. I have earned medals in writing and debate
+                    competitions, showcasing my communication and analytical skills.
+                </p>
+                <p class="hero-description">
+                    I have worked on projects such as a Password Vault and a University Mini Question Bank, which
+                    strengthened my abilities in coding and problem-solving. I have also completed courses in Python,
+                    C++, Machine Learning using Python, and Sanskrit Vyakarana.
+                </p>
+                <p class="hero-description">
+                    Beyond academics, I enjoy writing, playing chess, and reading philosophy-based books, as they
+                    enhance my creativity, strategic thinking, and depth of understanding.
+                </p>
+                <p class="hero-description">
+                    I am always eager to learn, build, and contribute meaningfully.
                 </p>
             </div>
         </section>
@@ -59,18 +78,12 @@
 
         <!-- Section: Today's Learning -->
         <section id="learning" class="section">
-            <h2 class="section-title">Today's Learning</h2>
-            <div class="learning-grid">
-                <div class="learning-card">
-                    <span class="date">Feb 10, 2026</span>
-                    <h3>Professional Self-Introduction</h3>
-                    <p>Explored keyframes and transitions for smooth UI interactions.</p>
-                </div>
-                <div class="learning-card">
-                    <span class="date">Feb 09, 2026</span>
-                    <h3>JavaScript ES6+</h3>
-                    <p>Deep dive into arrow functions, destructuring, and async/await.</p>
-                </div>
+            <div class="section-header">
+                <h2 class="section-title">Today's Learning</h2>
+                <button id="open-add-learning-btn" class="btn-primary hidden">Add Learning +</button>
+            </div>
+            <div class="learning-grid" id="learning-list">
+                <!-- Learning cards will be dynamically managed -->
             </div>
         </section>
 
@@ -101,14 +114,14 @@
         <section id="experience" class="section">
             <h2 class="section-title">Experience</h2>
             <div class="timeline">
-               
+
                 <div class="timeline-item">
                     <span class="year">2025 - Present</span>
                     <h3>Frontend Developer Intern</h3>
                     <p>Tech Corp Inc.</p>
                     <p>Building responsive UI components and optimizing web performance.</p>
                 </div>
-               
+
                 <div class="timeline-item">
                     <span class="year">2024 - 2025</span>
                     <h3>Freelance Web Designer</h3>
@@ -122,9 +135,9 @@
         <section id="education" class="section">
             <h2 class="section-title">Education</h2>
             <div class="list-item">
-                <h3>12th and 10th from St.Thomas School,Pauri Garhwal. 
+                <h3>12th and 10th from St.Thomas School,Pauri Garhwal.
                     Bachelor of Science in Computer Science from Graphic Era Hill University,
-                Dehradun.</h3>
+                    Dehradun.</h3>
                 <p>University of Tech, 2022 - 2026</p>
             </div>
         </section>
@@ -178,6 +191,19 @@
         </div>
     </div>
 
+    <!-- Add Learning Modal -->
+    <div id="add-learning-modal" class="modal hidden">
+        <div class="modal-content">
+            <span class="close-learning-modal">&times;</span>
+            <h2 id="learning-modal-title">Add New Learning</h2>
+            <input type="hidden" id="edit-learning-index">
+            <input type="text" id="new-learning-date" placeholder="Date (e.g., Feb 21, 2026)">
+            <input type="text" id="new-learning-title" placeholder="Learning Topic">
+            <textarea id="new-learning-desc" placeholder="Details/Takeaways" rows="4"></textarea>
+            <button id="save-learning" class="btn-primary">Save Learning</button>
+        </div>
+    </div>
+
     <!-- Add Assignment Modal -->
     <div id="add-assignment-modal" class="modal hidden">
         <div class="modal-content">
@@ -185,6 +211,12 @@
             <h2>Add New Assignment</h2>
             <input type="text" id="new-assign-title" placeholder="Assignment Title">
             <textarea id="new-assign-desc" placeholder="Description" rows="4"></textarea>
+            <div class="file-upload-container">
+                <input type="file" id="new-assign-file" class="hidden-file-input">
+                <label for="new-assign-file" class="btn-secondary">Choose File</label>
+                <span id="file-chosen-name">No file chosen</span>
+            </div>
+            <input type="text" id="new-assign-filename" placeholder="File Display Name (e.g., Assignment PDF)">
             <button id="save-assignment" class="btn-primary">Add Assignment</button>
         </div>
     </div>
