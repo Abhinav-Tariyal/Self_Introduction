@@ -224,11 +224,79 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
 
-    // 3. Add Assignment Logic (New)
+    // --- Add Assignment Logic (New & Persistent) ---
     const addAssignmentModal = document.getElementById('add-assignment-modal');
     const closeAddModal = document.querySelector('.close-add-modal');
     const saveAssignmentBtn = document.getElementById('save-assignment');
     const assignmentsList = document.getElementById('assignments-list');
+    const fileInput = document.getElementById('new-assign-file');
+    const fileChosenName = document.getElementById('file-chosen-name');
+
+    let assignments = JSON.parse(localStorage.getItem('assignments')) || [
+        {
+            title: 'Assignment 1: Self-Introduction',
+            desc: 'Creating complex grid layouts using CSS Grid and Flexbox.',
+            fileName: '',
+            fileUrl: ''
+        }
+    ];
+
+    function renderAssignments() {
+        if (!assignmentsList) return;
+        assignmentsList.innerHTML = '';
+        assignments.forEach((item, index) => {
+            const card = document.createElement('div');
+            card.classList.add('assignment-card');
+
+            let adminButtons = '';
+            if (isAdmin) {
+                adminButtons = `
+                    <div class="card-admin-actions">
+                        <button class="btn-icon-small delete-assignment" data-index="${index}">Delete</button>
+                    </div>
+                `;
+            }
+
+            let attachmentHtml = '';
+            // If we have a fileUrl (blob or path), show the link
+            if (item.fileUrl || item.fileName) {
+                const link = item.fileUrl || `documents/${item.fileName}`;
+                const displayName = item.fileName || 'View Attachment';
+                attachmentHtml = `
+                    <a href="${link}" target="_blank" class="attachment-link">
+                        ${displayName}
+                    </a>
+                `;
+            }
+
+            card.innerHTML = `
+                ${adminButtons}
+                <h3>${item.title}</h3>
+                <p>${item.desc}</p>
+                ${attachmentHtml}
+            `;
+            assignmentsList.appendChild(card);
+        });
+
+        // Add Delete Handlers
+        document.querySelectorAll('.delete-assignment').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                const index = e.target.getAttribute('data-index');
+                if (confirm('Are you sure you want to delete this assignment?')) {
+                    assignments.splice(index, 1);
+                    saveAndRenderAssignments();
+                }
+            });
+        });
+    }
+
+    function saveAndRenderAssignments() {
+        localStorage.setItem('assignments', JSON.stringify(assignments));
+        renderAssignments();
+    }
+
+    // Initial render
+    renderAssignments();
 
     // Show Add Modal
     addModalBtn.addEventListener('click', () => {
@@ -236,12 +304,9 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     // Update File Chosen Name in Modal
-    const fileInput = document.getElementById('new-assign-file');
-    const fileChosenName = document.getElementById('file-chosen-name');
     fileInput.addEventListener('change', () => {
         if (fileInput.files.length > 0) {
             fileChosenName.textContent = fileInput.files[0].name;
-            // Auto-fill file display name if empty
             const fileNameInput = document.getElementById('new-assign-filename');
             if (!fileNameInput.value) {
                 fileNameInput.value = fileInput.files[0].name;
@@ -264,29 +329,15 @@ document.addEventListener('DOMContentLoaded', () => {
         const customFileName = document.getElementById('new-assign-filename').value;
 
         if (title && desc) {
-            // Create new card element
-            const newCard = document.createElement('div');
-            newCard.classList.add('assignment-card');
+            const newAssignment = {
+                title: title,
+                desc: desc,
+                fileName: customFileName || (file ? file.name : ''),
+                fileUrl: file ? URL.createObjectURL(file) : ''
+            };
 
-            let attachmentHtml = '';
-            if (file) {
-                const fileUrl = URL.createObjectURL(file);
-                const displayName = customFileName || file.name || 'Attachment';
-                attachmentHtml = `
-                    <a href="${fileUrl}" target="_blank" class="attachment-link">
-                        ${displayName}
-                    </a>
-                `;
-            }
-
-            newCard.innerHTML = `
-                <h3>${title}</h3>
-                <p>${desc}</p>
-                ${attachmentHtml}
-            `;
-
-            // Prepend to list (show newest first)
-            assignmentsList.prepend(newCard);
+            assignments.unshift(newAssignment);
+            saveAndRenderAssignments();
 
             // Clean up
             addAssignmentModal.classList.add('hidden');
