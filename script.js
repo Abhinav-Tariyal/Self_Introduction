@@ -141,14 +141,22 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    // --- Hero Video Management ---
+    // --- Hero Video Management (Persistent) ---
     const introVideo = document.getElementById('intro-video');
     const videoPlaceholder = document.getElementById('video-placeholder');
     const heroVideoInput = document.getElementById('hero-video-input');
     const uploadVideoBtn = document.getElementById('upload-video-btn');
     const videoError = document.getElementById('video-error');
 
-    // Logic to handle initial video load status
+    // Load saved video on startup
+    const savedVideo = localStorage.getItem('heroVideo');
+    if (savedVideo && introVideo) {
+        introVideo.src = `videos/${savedVideo}`;
+        introVideo.classList.remove('hidden');
+        videoPlaceholder.classList.add('hidden');
+        introVideo.load();
+    }
+
     if (introVideo) {
         introVideo.addEventListener('loadeddata', () => {
             introVideo.classList.remove('hidden');
@@ -156,9 +164,12 @@ document.addEventListener('DOMContentLoaded', () => {
         });
 
         introVideo.addEventListener('error', () => {
-            introVideo.classList.add('hidden');
-            videoPlaceholder.classList.remove('hidden');
-            console.log("Video not found or failed to load. Showing placeholder.");
+            // Only hide and show placeholder if no manual blob is active
+            if (!introVideo.src.startsWith('blob:')) {
+                introVideo.classList.add('hidden');
+                videoPlaceholder.classList.remove('hidden');
+                console.log("Hero video not found at the expected path.");
+            }
         });
     }
 
@@ -169,17 +180,22 @@ document.addEventListener('DOMContentLoaded', () => {
     heroVideoInput.addEventListener('change', (e) => {
         const file = e.target.files[0];
         if (file) {
-            if (file.size > 50 * 1024 * 1024) { // 50MB limit for demo
+            if (file.size > 50 * 1024 * 1024) { // 50MB limit
                 videoError.textContent = "File too large. Please choose a video under 50MB.";
                 videoError.classList.remove('hidden');
                 return;
             }
             videoError.classList.add('hidden');
+
+            // Save filename for GitHub persistence
+            localStorage.setItem('heroVideo', file.name);
+
             const fileUrl = URL.createObjectURL(file);
             introVideo.src = fileUrl;
             introVideo.classList.remove('hidden');
             videoPlaceholder.classList.add('hidden');
             introVideo.load();
+            alert(`Video set to ${file.name}. Remember to push this file to your 'videos' folder on GitHub!`);
         }
     });
 
